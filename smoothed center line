@@ -1,0 +1,39 @@
+clear
+close
+
+fd = 'I:\腾讯项目\企业云盘下载\1553826740282_huashan\abnormal\';
+fdtarget = 'I:\腾讯项目\企业云盘下载\1553826740282_huashan\SmoothedCenterlinesForModeling\';
+%fdtarget = 'I:\腾讯项目\企业云盘下载\1553826740282_huashan\SmoothedCenterlinesForCurvatureAnalysis\';
+
+fn = dir(fd);
+dirFlags = [fn.isdir];
+subFolders = fn(dirFlags);
+subFolders = subFolders(3:end);
+%% define segLength as the point spacing in the new curve
+% for modeling, we use 3 mm
+% for geometric analysis, we use 0.2 mm
+segLength = 3; 
+
+
+% folder #71 has no files
+
+for j = 72%:length(subFolders)
+    j
+    fd2 = subFolders(j).name;
+    fnleft = [fd,fd2,'\','CenterlineLeftSmoothed_noorder.txt'];
+    fnright = [fd,fd2,'\','CenterlineRightSmoothed_noorder.txt'];
+    L = load(fnleft);
+    R = load(fnright);
+    LS = smooth3dlines(L,segLength);
+    RS = smooth3dlines(R,segLength);
+    SOAM_L = SOAM(LS)
+    SOAM_R = SOAM(RS)
+    fnL = [fdtarget,fd2,'_left.txt'];
+    fnR = [fdtarget,fd2,'_right.txt'];
+    
+    dlmwrite(fnL,LS,'precision',6,'delimiter',' ');
+    dlmwrite(fnR,RS,'precision',6,'delimiter',' ');
+    
+end
+
+%A = readmatrix(filename);
