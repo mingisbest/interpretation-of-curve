@@ -1,0 +1,21 @@
+function soam = SOAM(L)
+
+len = length(L);
+
+T1 = [1:2:len];
+T2 = [2:2:len];
+T3 = [3:2:len];
+
+NumTri = min([length(T1),length(T2),length(T3)]);
+lc = 0;
+angle = 0;
+for j = 1:NumTri
+    V1 = L(T1(j),:);
+    V2 = L(T2(j),:);
+    V3 = L(T3(j),:);
+    lc = lc + sqrt(sum((V2-V1).^2))+sqrt(sum((V2-V3).^2));
+    a = V2-V1; b = V2-V3;
+    alpha = acos(min(1,max(-1, a(:).' * b(:) / norm(a) / norm(b) ))) *180 / pi;
+    angle = angle + 180 - alpha ; 
+end
+soam = angle / lc ; 
