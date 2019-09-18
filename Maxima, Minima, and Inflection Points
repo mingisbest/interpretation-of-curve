@@ -1,0 +1,37 @@
+Maxima, Minima, and Inflection Points（useful website）
+
+https://www.mathworks.com/help/symbolic/examples/maxima-minima-and-inflection-points.html?searchHighlight=Inflection%20Point&s_tid=doc_srchtitle#responsive_offcanvas
+
+https://stackoverflow.com/questions/30598420/find-the-inflection-point-of-a-discrete-dataset-in-matlab
+
+
+The idea is to work in 2 steps:
+First define what is the noise level, and "simplify" the (x, y) polygonal line to some "smooth" subset (xs, ys). After the simplification, every change in curve features will be considered significant.
+Look for the changes in convexity of the polygonal line (xs, ys).
+For first point you may use the Douglas-Peucker algorithm, implemented here.
+The second point is based on the signed area constructed from 3 consecutive points of the polyline:
+      | x0   y0   1 |
+    1 |             |
+A = - | x1   y1   1 |
+    2 |             |
+      | x2   y2   1 |
+The polyline is "convex" - i.e. positive curvature - where these areas are positive, and "concave" - i.e. negative curvature - when the area is negative. The changes in curvature are the places where the inflection points are located.
+After downloading the dpsimplify function from File Exchange, you could run the following code (suppose that x and y vectors are already existing):
+%// Part 1.
+[ps,~] = dpsimplify([x(:),y(:)], 1e-3);  %// adjust "tol" above noise level
+xs = ps(:,1);
+ys = ps(:,2);
+
+%// Part 2
+I = 1:numel(xs)-2;
+sgnA = sign( ...
+    xs(I+0).*ys(I+1) ...
+  + xs(I+1).*ys(I+2) ...
+  + xs(I+2).*ys(I+0) ...
+  - xs(I+0).*ys(I+2) ...
+  - xs(I+1).*ys(I+0) ...
+  - xs(I+2).*ys(I+1) ...
+);
+k_inflex = find(2 == abs(diff(sgnA)));
+x_inflex = xs(k_inflex);
+y_inflex = ys(k_inflex);
