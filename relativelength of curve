@@ -1,0 +1,18 @@
+%calculate the relative length of one curve
+%p is 3D vector
+%length is the total length of one curve， while straight length is the direct length between two points located on the endpoints of curve
+%The first tortuosity descriptor that we used was relative length (RL), which is defined by the following formula: l/lc
+
+function RL = relativelength(p)
+px = p(:,1);py = p(:,2);pz = p(:,3);
+dx = (px(1:end-1)-px(2:end)).^2;
+dy = (py(1:end-1)-py(2:end)).^2;
+dz = (pz(1:end-1)-pz(2:end)).^2;
+D = [dx,dy,dz];
+D2 = sqrt(sum(D,2));
+Length = sum(D2);
+px1 = p(1,1);py1 = p(1,2);pz1 = p(1,3);
+px2 = p(end,1);py2 = p(end,2);pz2 = p(end,3);
+straightlength = norm(px2-px1);
+
+RL = straightlength/Length
