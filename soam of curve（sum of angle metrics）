@@ -13,7 +13,8 @@ for j = 1:NumTri
     V1 = L(T1(j),:);
     V2 = L(T2(j),:);
     V3 = L(T3(j),:);
-    lc = lc + sqrt(sum((V2-V1).^2))+sqrt(sum((V2-V3).^2));
+    %lc = lc + sqrt(sum((V2-V1).^2))+sqrt(sum((V2-V3).^2)); 这行相加的表达可能有误
+    lc = lc + sum(sqrt((V2-V1).^2))+sum(sqrt((V2-V3).^2));
     a = V2-V1; b = V2-V3;
     alpha = acos(min(1,max(-1, a(:).' * b(:) / norm(a) / norm(b) ))) *180 / pi;
     angle = angle + 180 - alpha ; 
