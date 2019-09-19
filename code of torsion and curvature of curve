@@ -1,6 +1,12 @@
 
 
 function [T,N,B,k,t] = frenet(x,y,z),
+%function [T,N,B,k,t] = frenet(L) %INSTEAD OF THE FIRST ROW
+    x = L(:,1);
+    y = L(:,2);
+    z = L(:,3);
+
+
 % FRENET - Frenet-Serret Space Curve Invarients
 %   
 %   [T,N,B,k,t] = frenet(x,y);
