@@ -1,0 +1,82 @@
+clear
+close
+
+
+
+% define segLength as the point spacing in the new curve
+% for modeling, we use 3 mm
+% for geometric analysis, we use 0.2 mm
+segLength = 0.2; 
+
+fd = 'E:\abnormal\';
+fdtarget = 'E:\smoothcurveparameter\';
+%fdtarget = 'I:\腾讯项目\企业云盘下载\1553826740282_huashan\SmoothedCenterlinesForCurvatureAnalysis\';
+
+fn = dir(fd);
+dirFlags = [fn.isdir];
+subFolders = fn(dirFlags);
+subFolders = subFolders(3:end);
+n = length(subFolders);
+
+% folder #71 has no files
+
+for j = 1:n%:length(subFolders)
+    j
+    fd2 = subFolders(j).name;
+    fnleft = [fd,fd2,'\','CenterlineLeft_noorder.txt'];
+    fnright = [fd,fd2,'\','CenterlineRight_noorder.txt'];
+    L = load(fnleft);
+    R = load(fnright);
+    LS = smooth3dlines(L,segLength);
+    RS = smooth3dlines(R,segLength);
+    SOAM_L = SOAM(LS);
+    SOAM_R = SOAM(RS);
+    
+    RL_L = relativelength(LS);
+    RL_R = relativelength(RS);
+    
+    [T1,N1,B1,k1,t1] = frenet(LS);
+    k_LS = k1;
+    [T2,N2,B2,k2,t2] = frenet(RS);
+    k_RS = k2;
+    t_LS = t1;
+    t_RS = t2;
+    
+    PAD_L = SOAM_L*RL_L;
+    PAD_R = SOAM_R*RL_R;
+    triangular_L = ti(LS);
+    triangular_R = ti(RS);
+    
+    
+    fnL1 = [fdtarget,fd2,' LS_left.txt'];
+    fnR1 = [fdtarget,fd2,' RS_right.txt'];
+    fnL2 = [fdtarget,fd2,' SOAM_L.txt'];
+    fnR2 = [fdtarget,fd2,' SOAM_R.txt'];
+    fnL3 = [fdtarget,fd2,' RL_L.txt'];
+    fnR3 = [fdtarget,fd2,' RL_R.txt'];
+    fnL4 = [fdtarget,fd2,' k_LS.txt'];
+    fnR4 = [fdtarget,fd2,' k_RS.txt'];
+    fnL5 = [fdtarget,fd2,' t_LS.txt'];
+    fnR5 = [fdtarget,fd2,' t_RS.txt'];
+    fnL6 = [fdtarget,fd2,' PAD_L.txt'];
+    fnR6 = [fdtarget,fd2,' PAD_R.txt'];
+    fnL7 = [fdtarget,fd2,' triangular_L.txt'];
+    fnR7 = [fdtarget,fd2,' triangular_R.txt'];
+    dlmwrite(fnL1,LS,'precision',6,'delimiter',' ');
+    dlmwrite(fnR1,RS,'precision',6,'delimiter',' ');
+    dlmwrite(fnL2,SOAM_L,'precision',6,'delimiter',' ');
+    dlmwrite(fnR2,SOAM_R,'precision',6,'delimiter',' ');
+    dlmwrite(fnL3,RL_L,'precision',6,'delimiter',' ');
+    dlmwrite(fnR3,RL_R,'precision',6,'delimiter',' ');
+    dlmwrite(fnL4,k_LS,'precision',6,'delimiter',' ');
+    dlmwrite(fnR4,k_RS,'precision',6,'delimiter',' ');
+    dlmwrite(fnL5,t_LS,'precision',6,'delimiter',' ');
+    dlmwrite(fnR5,t_RS,'precision',6,'delimiter',' ');
+    dlmwrite(fnL6,PAD_L,'precision',6,'delimiter',' ');
+    dlmwrite(fnR6,PAD_R,'precision',6,'delimiter',' ');
+    dlmwrite(fnL7,triangular_L,'precision',6,'delimiter',' ');
+    dlmwrite(fnR7,triangular_R,'precision',6,'delimiter',' ');
+    
+end
+
+%A = readmatrix(filename);
