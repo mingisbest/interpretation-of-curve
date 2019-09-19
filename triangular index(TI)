@@ -1,0 +1,26 @@
+function triangular = ti(L)
+px = L(:,1);py = L(:,2);pz = L(:,3);
+dx = (px(1:end-1)-px(2:end)).^2;
+dy = (py(1:end-1)-py(2:end)).^2;
+dz = (pz(1:end-1)-pz(2:end)).^2;
+D = [dx,dy,dz];
+D2 = sqrt(sum(D,2));
+Length = sum(D2);
+len = length(L);
+T1 = [1:2:len];
+T2 = [2:2:len];
+T3 = [3:2:len];
+NumTri = min([length(T1),length(T2),length(T3)]);
+lc = 0;
+angle = 0;
+TI = 0;
+for j = 1:NumTri
+    V1 = L(T1(j),:);
+    V2 = L(T2(j),:);
+    V3 = L(T3(j),:);
+    a = V2-V1; b = V2-V3; c = V3-V1;
+    %TI = TI + sum((sqrt(a.^2) + sqrt(b.^2))/sqrt(c.^2));
+    TI = (TI + (norm(a)+norm(b))/norm(c))/NumTri;
+   
+end
+triangular = TI
