@@ -1,0 +1,38 @@
+fd = 'E:\abnormal\';
+fdtarget = 'E:\smoothcurveparameter2\';
+%fdtarget = 'I:\腾讯项目\企业云盘下载\1553826740282_huashan\SmoothedCenterlinesForCurvatureAnalysis\';
+
+fn = dir(fd);
+dirFlags = [fn.isdir];
+subFolders = fn(dirFlags);
+subFolders = subFolders(3:end);
+n = length(subFolders);
+
+% folder #71 has no files
+fid=fopen('E:\SOAM_L-1.txt','w');
+fid1=fopen('E:\SOAM_R-1.txt','w');
+fid2=fopen('E:\RL_L-1.txt','w');
+ 
+ 
+for j = 1:n%:length(subFolders)
+    j
+    fd2 = subFolders(j).name;
+    fnleft = [fd,fd2,'\','CenterlineLeftSmoothed_noorder.txt'];
+    fnright = [fd,fd2,'\','CenterlineRightSmoothed_noorder.txt'];
+    L = load(fnleft);
+    R = load(fnright);
+    LS = smooth3dlines(L,segLength);
+    RS = smooth3dlines(R,segLength);
+    SOAM_L = SOAM(LS);
+    SOAM_R = SOAM(RS);
+    RL_L = relativelength(LS);
+    fprintf(fid,'%11.4f','\t',SOAM_L);
+    fprintf(fid,'\n');
+    fprintf(fid1,'%3d %11.4f\r\n',SOAM_R);
+    fprintf(fid1,'\n');
+    fprintf(fid2,'%3d %11.4f\r\n',RL_L);
+    fprintf(fid2,'\n');
+end
+    fclose(fid);
+    fclose(fid1);
+    fclose(fid2);
