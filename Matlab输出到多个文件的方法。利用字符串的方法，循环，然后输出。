@@ -1,0 +1,52 @@
+%在整体循环后单独计算此部分
+
+clear all
+
+clc
+
+load tranAfter;
+
+%输出PChargePowerAllStationData
+
+[m1,n1]=size(PChargePowerAllStationData);%两个都是240*14矩阵
+
+for iFile = 1:1:m1
+
+    fileName=['./savePData/' num2str(iFile)
+'/PChargePowerAllStationData.txt'];  %电动汽车负荷
+
+    fileName1=['./savePData/' num2str(iFile) 
+'/busNodeData3.txt'];               %所有负荷
+
+    fid=fopen(fileName,'wt');
+
+    fid1=fopen(fileName1,'wt');
+
+    for jFile = 1:1:n1
+
+        fprintf(fid,'%6.2f',PChargePowerAllStationData(iFile,jFile)*100);
+
+        fprintf(fid,'\n');
+
+        fprintf(fid1,'%6.2f',busNodeData3(iFile,jFile)*2);
+
+        fprintf(fid1,'\n');
+
+    end
+
+    fclose(fid);
+
+    fclose(fid1);
+
+end
+
+disp('done');
+
+
+
+*写入时候，文件可以不存在，但是文件夹一定要存在。OS平台的automator功能，可以帮助完成改名等功能，好用。
+
+*存在问题：Mac OS 平台传输到win平台时，换行不见了。
+————————————————
+版权声明：本文为CSDN博主「cytonFish」的原创文章，遵循 CC 4.0 BY-SA 版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/jiangxxonline/article/details/72787124
