@@ -1,0 +1,101 @@
+
+clear
+close
+
+
+
+% define segLength as the point spacing in the new curve
+% for modeling, we use 3 mm
+% for geometric analysis, we use 0.2 mm
+segLength = 0.2; 
+fd = 'E:\extracted cases\';
+fdtarget = 'E:\smooth extracted cases\';
+%fdtarget = 'I:\腾讯项目\企业云盘下载\1553826740282_huashan\SmoothedCenterlinesForCurvatureAnalysis\';
+
+fn = dir(fd);
+dirFlags = [fn.isdir];
+subFolders = fn(dirFlags);
+subFolders = subFolders(3:end);
+n = length(subFolders);
+
+% folder #71 has no files
+fid=fopen('E:\smooth extracted cases\SOAM_L.txt','w');
+fid1=fopen('E:\smooth extracted cases\SOAM_R.txt','w');
+fid2=fopen('E:\smooth extracted cases\RL_L.txt','w');
+fid3=fopen('E:\smooth extracted cases\RL_R.txt','w');
+fid4=fopen('E:\smooth extracted cases\k_LS_m.txt','w');
+fid5=fopen('E:\smooth extracted cases\k_RS_m.txt','w');
+fid6=fopen('E:\smooth extracted cases\PAD_L.txt','w');
+fid7=fopen('E:\smooth extracted cases\PAD_R.txt','w');
+fid8=fopen('E:\smooth extracted cases\triangular_L.txt','w');
+fid9=fopen('E:\smooth extracted cases\triangular_R.txt','w');
+fid10=fopen('E:\smooth extracted cases\t_LS_m.txt','w');
+fid11=fopen('E:\smooth extracted cases\t_RS_m.txt','w');
+for j = 1:n%:length(subFolders)
+    j
+    fd2 = subFolders(j).name;
+    fnleft = [fd,fd2,'\','l-v2.txt'];
+    fnright = [fd,fd2,'\','r-v2.txt'];
+    L = load(fnleft);
+    R = load(fnright);
+    LS = smooth3dlines(L,segLength);
+    RS = smooth3dlines(R,segLength);
+    SOAM_L = SOAM(LS);
+    SOAM_R = SOAM(RS);
+    RL_L = relativelength(LS);
+    RL_R = relativelength(RS);   
+    [T1,N1,B1,k1,t1] = frenet(LS);
+    k_LS = k1;
+    [T2,N2,B2,k2,t2] = frenet(RS);
+    k_RS = k2;
+    t_LS = t1;
+    t_RS = t2;
+    t_LS_m = mean(t_LS);
+    t_RS_m = mean(t_RS);
+    k_LS_m = mean(k_LS);
+    k_RS_m = mean(k_RS);
+    k_LS_std = std(k_LS);
+    k_RS_std = std(k_RS);
+    
+    PAD_L = SOAM_L*RL_L;
+    PAD_R = SOAM_R*RL_R;
+    triangular_L = ti(LS);
+    triangular_R = ti(RS);
+    fprintf(fid,'%3d %11.4f\r\n',SOAM_L);
+    fprintf(fid,'\n');
+    fprintf(fid1,'%3d %11.4f\r\n',SOAM_R);
+    fprintf(fid1,'\n');
+    fprintf(fid2,'%3d %11.4f\r\n',RL_L);
+    fprintf(fid2,'\n');
+    fprintf(fid3,'%3d %11.4f\r\n',RL_R);
+    fprintf(fid3,'\n');
+    fprintf(fid4,'%3d %11.4f\r\n',k_LS_m);
+    fprintf(fid4,'\n');
+    fprintf(fid5,'%3d %11.4f\r\n',k_RS_m);
+    fprintf(fid5,'\n');
+    fprintf(fid6,'%3d %11.4f\r\n',PAD_L);
+    fprintf(fid6,'\n');
+    fprintf(fid7,'%3d %11.4f\r\n',PAD_R);
+    fprintf(fid7,'\n');
+    fprintf(fid8,'%3d %11.4f\r\n',triangular_L);
+    fprintf(fid8,'\n');
+    fprintf(fid9,'%3d %11.4f\r\n',triangular_R);
+    fprintf(fid9,'\n');
+    fprintf(fid10,'%3d %11.4f\r\n',t_LS_m);
+    fprintf(fid10,'\n');
+    fprintf(fid11,'%3d %11.4f\r\n',t_RS_m);
+    fprintf(fid11,'\n');
+end
+    fclose(fid);
+    fclose(fid1);
+    fclose(fid2);
+    fclose(fid3);
+    fclose(fid4);
+    fclose(fid5);
+    fclose(fid6);
+    fclose(fid7);
+    fclose(fid8);
+    fclose(fid9);
+    fclose(fid10);
+    fclose(fid11);
+   
